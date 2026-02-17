@@ -11,7 +11,6 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
 from pathlib import Path
-import dj_database_url
 import os
 
 from dotenv import load_dotenv
@@ -30,12 +29,7 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = [
-    'automart-backend-zvof.onrender.com', 
-    'localhost', 
-    '127.0.0.1',
-    '.onrender.com'  # This wildcard allows all render subdomains
-]
+ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -67,8 +61,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-
-    'whitenoise.middleware.WhiteNoiseMiddleware',
+    
 ]
 
 ROOT_URLCONF = 'Automotive.urls'
@@ -95,22 +88,15 @@ WSGI_APPLICATION = 'Automotive.wsgi.application'
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
 DATABASES = {
-    'default': dj_database_url.config(
-        default=os.environ.get('DATABASE_URL'),
-        conn_max_age=600
-    )
-}
-
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': 'automotive_db',
-#         'USER': 'root',
-#         'PASSWORD': os.getenv('DB_PASSWORD'),
-#         'HOST': 'localhost',
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'automotive_db',
+        'USER': 'root',
+        'PASSWORD': os.getenv('DB_PASSWORD'),
+        'HOST': 'localhost',
         
-#     }
-# }
+    }
+}
 
 
 # Password validation
