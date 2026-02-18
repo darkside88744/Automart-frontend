@@ -205,3 +205,7 @@ CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 
 STATIC_ROOT = BASE_DIR / "staticfiles"
+
+# Force Celery to run tasks immediately without a broker
+CELERY_TASK_ALWAYS_EAGER = True
+CELERY_TASK_EAGER_PROPAGATES = True
