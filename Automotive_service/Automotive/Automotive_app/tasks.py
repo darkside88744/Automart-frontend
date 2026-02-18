@@ -12,5 +12,5 @@ def send_async_email(subject, message, recipient_list, html_message=None):
         from_email=settings.EMAIL_HOST_USER,
         recipient_list=recipient_list,
         html_message=html_message, # This is crucial!
-        fail_silently=False,
+        fail_silently=True,
     )

@@ -1,0 +1,77 @@
+version: '3.8'
+
+services:
+  db:
+    image: mysql:8.0
+    restart: always
+    environment:
+      MYSQL_DATABASE: automotive_db
+      MYSQL_ROOT_PASSWORD: password
+    ports:
+      - "3306:3306"
+    # Added volume to keep your superuser and data safe
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-ppassword"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  web:
+    build: .
+    command: >
+      sh -c "python Automotive/manage.py migrate && 
+             python Automotive/manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    environment:
+      - DEBUG=True
+      - DATABASE_URL=mysql://root:password@db:3306/automotive_db
+      - REDIS_URL=redis://redis:6379/0
+    depends_on:
+      db:
+        condition: service_healthy
+
+  worker:
+    build: .
+    command: celery -A Automotive.Automotive worker --loglevel=info
+    volumes:
+      - .:/app
+    environment:
+      - DATABASE_URL=mysql://root:password@db:3306/automotive_db
+      - REDIS_URL=redis://redis:6379/0
+    depends_on:
+      redis:
+        condition: service_healthy
+      web:
+        condition: service_started
+
+  frontend:
+    build:
+      context: ./automart-frontend
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./automart-frontend:/app
+      - /app/node_modules
+    environment:
+      - VITE_API_URL=http://localhost:8000
+    depends_on:
+      - web
+
+# Define the named volume for persistence
+volumes:
+  mysql_data:
