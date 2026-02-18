@@ -15,11 +15,11 @@ SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-default-change-me')
 DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
 ALLOWED_HOSTS = [
-    os.environ.get("RAILWAY_STATIC_URL"), 
-    "automart-backend-production.up.railway.app",
+    
     "localhost", 
     "127.0.0.1",
     "web", # Allow the docker service name
+    '192.168.1.75'
 ]
 
 # Application definition
@@ -101,15 +101,15 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
-    "https://automartbysarath.netlify.app",
+    "http://192.168.1.75:5173",
+    
 ]
 
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:8000",
     "http://127.0.0.1:8000",
     "http://localhost:5173", # For your frontend
-    "https://automart-backend-production.up.railway.app",
-    "https://automartbysarath.netlify.app",
+    
 ]
 
 # Django Rest Framework & JWT
